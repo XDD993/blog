@@ -16,6 +16,9 @@ spring:
       max-file-size: 20MB
       # HTTP请求中包含的所有文件的总大小的最大允许值
       max-request-size: 20MB
+  redis:
+    host: 192.168.150.104
+    port: 6379
 
 mybatis-plus:
   configuration:
