@@ -2,6 +2,8 @@ package com.ddd.controller;
 
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.User;
+import com.ddd.enums.AppHttpCodeEnum;
+import com.ddd.handler.exception.SystemException;
 import com.ddd.service.BlogLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,9 @@ public class BlogLoginController {
     @PostMapping("/login")
     //ResponseResult是我们在huanf-framework工程里面写的实体类
     public ResponseResult login(@RequestBody User user){
+        if (user.getUserName()==null){
+            throw new SystemException(AppHttpCodeEnum.REQUIRE_USERNAME);
+        }
         return blogLoginService.login(user);
     }
 
