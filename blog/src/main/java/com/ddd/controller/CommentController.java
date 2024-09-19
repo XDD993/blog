@@ -41,7 +41,7 @@ public class CommentController {
 	 * @param comment
 	 * @return
 	 */
-	@PostMapping()
+	@PostMapping("")
 	public ResponseResult addComment(@RequestBody Comment comment){
 		return commentService.addComment(comment);
 
