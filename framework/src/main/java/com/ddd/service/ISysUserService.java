@@ -1,5 +1,6 @@
 package com.ddd.service;
 
+import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISysUserService extends IService<SysUser> {
 
+	ResponseResult userInfo();
 }
