@@ -1,9 +1,5 @@
 package com.ddd.constants;
 
-/**
- * @author 35238
- * @date 2023/7/19 0019 19:14
- */
 //字面值(代码中的固定值)处理，把字面值都在这里定义成常量
 public class SystemCanstants {
 

@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author 35238
- * @date 2023/7/22 0022 21:31
- */
 @RestController
 public class BlogLoginController {
 

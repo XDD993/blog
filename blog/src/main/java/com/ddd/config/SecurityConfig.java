@@ -1,7 +1,6 @@
 package com.ddd.config;
 
 import com.ddd.filter.JwtAuthenticationTokenFilter;
-import com.ddd.handler.security.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
