@@ -8,6 +8,7 @@ import com.ddd.service.ISysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ddd.utils.BeanCopyUtils;
 import com.ddd.utils.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,5 +28,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		SysUser user = getById(userId);
 		UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
 		return ResponseResult.okResult(userInfoVo);
+	}
+
+	@Override
+	public ResponseResult updateUserInfo(UserInfoVo user) {
+		SysUser sysUser = BeanCopyUtils.copyBean(user, SysUser.class);
+		updateById(sysUser);
+		return ResponseResult.okResult();
 	}
 }
