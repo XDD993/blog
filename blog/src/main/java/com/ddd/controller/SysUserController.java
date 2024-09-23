@@ -37,7 +37,13 @@ public class SysUserController {
 
 	@PutMapping ("/userInfo")
 	public ResponseResult updateUserInfo(@RequestBody UserInfoVo user){
-		ResponseResult result =  userService.updateUserInfo(user);
+		ResponseResult result = userService.updateUserInfo(user);
+		return result;
+	}
+
+	@PostMapping("/register")
+	public ResponseResult register(@RequestBody SysUser user){
+		ResponseResult result = userService.register(user);
 		return result;
 	}
 }
