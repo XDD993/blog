@@ -16,10 +16,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.ddd.service.ICategoryService;
 import com.ddd.utils.BeanCopyUtils;
+import com.ddd.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -36,10 +38,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
 	@Autowired
 	private ICategoryService categoryService;
+	@Autowired
+	private RedisCache redisCache;
 
 
 	@Override
 	public ResponseResult hotArticleList() {
+		Map<String, Integer> cacheMap = redisCache.getCacheMap("article:viewCount");
+		List<Article> list = cacheMap.entrySet().stream().map(obj -> new Article(Long.valueOf(obj.getKey()), obj.getValue().longValue())).collect(Collectors.toList());
+		updateBatchById(list);
 		LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(Article::getStatus, SystemCanstants.ARTICLE_STATUS_NORMAL);
 		wrapper.orderByDesc(Article::getViewCount);
@@ -71,6 +78,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 	@Override
 	public ResponseResult getArticleDetail(Long id) {
 		Article article = getById(id);
+		Integer value = redisCache.getCacheMapValue("article:viewCount", id.toString());
+		article.setViewCount(value.longValue());
 		ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
 		Category category = categoryService.getById(articleDetailVo.getCategoryId());
 		if (category!=null){
@@ -78,5 +87,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 		}
 
 		return ResponseResult.okResult(articleDetailVo);
+	}
+
+	@Override
+	public ResponseResult updateViewCount(Long id) {
+		redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
+		return ResponseResult.okResult();
 	}
 }

@@ -1,15 +1,12 @@
 package com.ddd.controller;
 
 
+import com.ddd.annotation.systemLog;
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.Article;
 import com.ddd.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,6 +49,12 @@ public class ArticleController {
 	public ResponseResult getArticleDetail(@PathVariable("id") Long id){
 		ResponseResult  result =articleService.getArticleDetail(id);
 		return result;
+	}
+
+	@PutMapping("/updateViewCount/{id}")
+	@systemLog(businessName = "根据文章id从mysql查询文章")//接口描述，用于'日志记录'功能
+	public ResponseResult updateViewCount(@PathVariable("id") Long id){
+		return articleService.updateViewCount(id);
 	}
 
 }
