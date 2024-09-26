@@ -34,4 +34,33 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 		List<String> otherPerms = getBaseMapper().selectPermsByOtherUserId(id);
 		return otherPerms;
 	}
+
+	@Override
+	public List<Menu> getRouters(Long userId) {
+		List<Menu> menus =null;
+		//要先判断是管理员还是普通用户
+		if (userId.equals(1L)){
+			//查询出所有的菜单目录
+			menus = getBaseMapper().selectAllRouterMenu();
+		}else{
+			menus =getBaseMapper().selectOtherRouterMenuTreeByUserId(userId);
+		}
+		List<Menu> menuTree =  buildMenuTree(menus);
+		return menuTree;
+	}
+
+	private List<Menu> buildMenuTree(List<Menu> menus) {
+		List<Menu> list = menus.stream().
+				filter(obj -> obj.getParentId().equals(0L)).
+				map(obj -> obj.setChildren(getChildren(obj, menus))).collect(Collectors.toList());
+		return list;
+	}
+
+	private List<Menu> getChildren(Menu obj, List<Menu> menus) {
+		List<Menu> list = menus.stream()
+				.filter(m -> m.getParentId().equals(obj.getId()))
+				.map(m -> m.setChildren(getChildren(m, menus)))
+				.collect(Collectors.toList());
+		return list;
+	}
 }

@@ -1,8 +1,10 @@
 package com.ddd.controller;
 
 import com.ddd.domain.ResponseResult;
+import com.ddd.domain.entity.Menu;
 import com.ddd.domain.entity.User;
 import com.ddd.domain.vo.AdminUserInfoVo;
+import com.ddd.domain.vo.RoutersVo;
 import com.ddd.domain.vo.UserInfoVo;
 import com.ddd.enums.AppHttpCodeEnum;
 import com.ddd.handler.exception.SystemException;
@@ -42,14 +44,17 @@ public class LoginController {
 		return loginService.login(user);
 	}
 
-	@PostMapping("/logout")
-	public ResponseResult logout(){
-		return loginService.logout();
-	}
+//	@PostMapping("/logout")
+//	public ResponseResult logout(){
+//		return loginService.logout();
+//	}
 
+	/**
+	 * 查询当前用户拥有的权限和角色
+	 * @return
+	 */
 	@GetMapping("/getInfo")
 	public ResponseResult<AdminUserInfoVo> getInfo(){
-		Long userId = SecurityUtils.getUserId();
 		User user = SecurityUtils.getLoginUser().getUser();
 		//查询权限
 		List<String> perms = menuService.selectPermsByUserId(user.getId());
@@ -60,4 +65,14 @@ public class LoginController {
 		return ResponseResult.okResult(vo);
 	}
 
+	/**
+	 * 动态路由查询当前用户的菜单列表 前端展示
+	 * @return
+	 */
+	@GetMapping("/getRouters")
+	public ResponseResult<RoutersVo> getRouters(){
+		Long userId = SecurityUtils.getUserId();
+		List<Menu> menus = menuService.getRouters(userId);
+		return ResponseResult.okResult(new RoutersVo(menus));
+	}
 }

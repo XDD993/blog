@@ -1,5 +1,6 @@
 package com.ddd.domain.vo;
 
+import com.ddd.domain.entity.Menu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,11 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminUserInfoVo {
+public class RoutersVo {
 
-	private List<String> permissions;
-
-	private List<String> roles;
-
-	private UserInfoVo user;
+	private List<Menu> menus;
 }
