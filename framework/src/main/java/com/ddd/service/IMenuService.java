@@ -3,6 +3,8 @@ package com.ddd.service;
 import com.ddd.domain.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜单权限表 服务类
@@ -13,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IMenuService extends IService<Menu> {
 
+	List<String> selectPermsByUserId(Long id);
 }
+

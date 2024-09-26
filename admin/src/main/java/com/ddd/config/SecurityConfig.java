@@ -54,7 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                //登录了的才可以进行退出
 //                .antMatchers("/logout").authenticated()
                 // 除上面外的所有请求全部不需要认证即可访问
-                .anyRequest().permitAll();
+                .antMatchers("/user/login").anonymous()
+                .anyRequest().authenticated();
 
         //把自己写的自定义异常处理器交给Security
         http.exceptionHandling()
