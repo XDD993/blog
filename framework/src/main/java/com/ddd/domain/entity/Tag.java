@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,11 +38,11 @@ public class Tag implements Serializable {
 
     private Long createBy;
 
-    private LocalDateTime createTime;
+    private Date createTime;
 
     private Long updateBy;
 
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     @ApiModelProperty(value = "删除标志（0代表未删除，1代表已删除）")
     private Integer delFlag;

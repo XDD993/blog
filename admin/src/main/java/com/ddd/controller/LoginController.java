@@ -44,10 +44,11 @@ public class LoginController {
 		return loginService.login(user);
 	}
 
-//	@PostMapping("/logout")
-//	public ResponseResult logout(){
-//		return loginService.logout();
-//	}
+	@PostMapping("/user/logout")
+	public ResponseResult logout(){
+
+		return loginService.logout();
+	}
 
 	/**
 	 * 查询当前用户拥有的权限和角色
@@ -75,4 +76,6 @@ public class LoginController {
 		List<Menu> menus = menuService.getRouters(userId);
 		return ResponseResult.okResult(new RoutersVo(menus));
 	}
+
+
 }
