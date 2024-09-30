@@ -20,7 +20,7 @@ public class UpdateViewCount {
 	@Autowired
 	private IArticleService articleService;
 
-	@Scheduled(cron = "0/10 * * * * ?")
+//	@Scheduled(cron = "0/10 * * * * ?")
 	public void updateViewCount(){
 		Map<String, Integer> cacheMap = redisCache.getCacheMap("article:viewCount");
 		List<Article> list = cacheMap.entrySet().stream().map(obj -> {

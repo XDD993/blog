@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ddd.constants.SystemCanstants;
 import com.ddd.domain.ResponseResult;
+import com.ddd.domain.dto.AddArticleDto;
 import com.ddd.domain.entity.Article;
+import com.ddd.domain.entity.ArticleTag;
 import com.ddd.domain.entity.Category;
 import com.ddd.domain.vo.ArticleDetailVo;
 import com.ddd.domain.vo.ArticleListVo;
@@ -14,12 +16,15 @@ import com.ddd.mapper.ArticleMapper;
 import com.ddd.service.IArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import com.ddd.service.IArticleTagService;
 import com.ddd.service.ICategoryService;
 import com.ddd.utils.BeanCopyUtils;
 import com.ddd.utils.RedisCache;
+import com.ddd.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,7 +45,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 	private ICategoryService categoryService;
 	@Autowired
 	private RedisCache redisCache;
-
+	@Autowired
+	private IArticleTagService articleTagService;
 
 	@Override
 	public ResponseResult hotArticleList() {
@@ -92,6 +98,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 	@Override
 	public ResponseResult updateViewCount(Long id) {
 		redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult add(AddArticleDto articleDto) {
+		Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
+		Long userId = SecurityUtils.getUserId();
+		article.setCreateBy(userId);
+		article.setUpdateBy(userId);
+		Date date = new Date();
+		article.setCreateTime(date);
+		article.setUpdateTime(date);
+		save(article);
+		//还要添加文章关联表信息
+		List<ArticleTag> list = articleDto.getTags().stream().map(tagId -> new ArticleTag(article.getId(), tagId)).collect(Collectors.toList());
+		articleTagService.saveOrUpdateBatch(list);
 		return ResponseResult.okResult();
 	}
 }

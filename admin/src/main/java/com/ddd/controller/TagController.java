@@ -11,6 +11,8 @@ import com.ddd.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 标签 前端控制器
@@ -89,5 +91,10 @@ public class TagController {
 		Tag tag = BeanCopyUtils.copyBean(editTagDto, Tag.class);
 		tagService.updateById(tag);
 		return ResponseResult.okResult();
+	}
+	@GetMapping("/listAllTag")
+	public ResponseResult<List<Tag>> getAllTag(){
+		List<Tag> list = tagService.list();
+		return ResponseResult.okResult(list);
 	}
 }

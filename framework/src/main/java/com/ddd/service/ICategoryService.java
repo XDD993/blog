@@ -15,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ICategoryService extends IService<Category> {
 
 	ResponseResult getCategoryList();
+
+	ResponseResult listAllCategory();
 }

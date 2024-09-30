@@ -1,6 +1,7 @@
 package com.ddd.service;
 
 import com.ddd.domain.ResponseResult;
+import com.ddd.domain.dto.AddArticleDto;
 import com.ddd.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -22,4 +23,6 @@ public interface IArticleService extends IService<Article> {
 	ResponseResult getArticleDetail(Long id);
 
 	ResponseResult updateViewCount(Long id);
+
+	ResponseResult add(AddArticleDto articleDto);
 }
