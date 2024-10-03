@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +15,8 @@ import java.util.Collection;
 public class LoginUser implements UserDetails {
 
     private User user;
+
+    private List<String> permissions;
 
     @Override
     //用于返回权限信息。现在我们正在实现'认证'，'权限'后面才用得到。所以返回null即可
