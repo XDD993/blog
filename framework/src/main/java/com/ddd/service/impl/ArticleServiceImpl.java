@@ -1,18 +1,18 @@
 package com.ddd.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ddd.constants.SystemCanstants;
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.dto.AddArticleDto;
+import com.ddd.domain.dto.ArticleDto;
 import com.ddd.domain.entity.Article;
 import com.ddd.domain.entity.ArticleTag;
 import com.ddd.domain.entity.Category;
-import com.ddd.domain.vo.ArticleDetailVo;
-import com.ddd.domain.vo.ArticleListVo;
-import com.ddd.domain.vo.HotArticleVO;
-import com.ddd.domain.vo.PageVo;
+import com.ddd.domain.vo.*;
 import com.ddd.mapper.ArticleMapper;
+import com.ddd.mapper.ArticleTagMapper;
 import com.ddd.service.IArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -21,8 +21,10 @@ import com.ddd.service.ICategoryService;
 import com.ddd.utils.BeanCopyUtils;
 import com.ddd.utils.RedisCache;
 import com.ddd.utils.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -47,6 +49,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 	private RedisCache redisCache;
 	@Autowired
 	private IArticleTagService articleTagService;
+	@Autowired
+	private ArticleTagMapper articleTagMapper;
 
 	@Override
 	public ResponseResult hotArticleList() {
@@ -116,4 +120,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 		articleTagService.saveOrUpdateBatch(list);
 		return ResponseResult.okResult();
 	}
+
+	@Override
+	public PageVo selectArticlePage(Article article, Integer pageNum, Integer pageSize) {
+		LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(StringUtils.hasText(article.getTitle()),Article::getTitle,article.getTitle());
+		wrapper.eq(StringUtils.hasText(article.getSummary()),Article::getSummary,article.getSummary());
+		Page page = new Page(pageNum,pageSize);
+		page(page,wrapper);
+		PageVo vo = new PageVo();
+		vo.setRows(page.getRecords());
+		vo.setTotal(page.getTotal());
+		return vo;
+	}
+
+	@Override
+	public ResponseResult getInfo(Long id) {
+		Article article = getById(id);
+		List<ArticleTag> articleTagList = articleTagService.list(new QueryWrapper<ArticleTag>().eq("article_id", article.getId()));
+		List<Long> list = articleTagList.stream().map(articleTag -> articleTag.getTagId()).collect(Collectors.toList());
+		ArticleByIdVo articleByIdVo = BeanCopyUtils.copyBean(article, ArticleByIdVo.class);
+		articleByIdVo.setTags(list);
+		return ResponseResult.okResult(articleByIdVo);
+	}
+
+	@Override
+	public void edit(ArticleDto articleDto) {
+		//先更新文章的信息
+		Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
+		updateById(article);
+		//再删除文章和标签表的相关信息
+		articleTagService.remove(new QueryWrapper<ArticleTag>().eq("article_id", article.getId()));
+		//再重新更新回去
+		List<ArticleTag> list = articleDto.getTags().stream().map(tagId -> new ArticleTag(articleDto.getId(), tagId)).collect(Collectors.toList());
+		articleTagMapper.saveBatchList(list);
+
+	}
+
+
 }

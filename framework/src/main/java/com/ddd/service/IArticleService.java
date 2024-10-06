@@ -2,8 +2,10 @@ package com.ddd.service;
 
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.dto.AddArticleDto;
+import com.ddd.domain.dto.ArticleDto;
 import com.ddd.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ddd.domain.vo.PageVo;
 
 /**
  * <p>
@@ -25,4 +27,10 @@ public interface IArticleService extends IService<Article> {
 	ResponseResult updateViewCount(Long id);
 
 	ResponseResult add(AddArticleDto articleDto);
+
+	PageVo selectArticlePage(Article article, Integer pageNum, Integer pageSize);
+
+	ResponseResult getInfo(Long id);
+
+	void edit(ArticleDto articleDto);
 }

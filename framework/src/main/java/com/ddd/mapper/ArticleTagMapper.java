@@ -2,6 +2,9 @@ package com.ddd.mapper;
 
 import com.ddd.domain.entity.ArticleTag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2024-09-27
  */
 public interface ArticleTagMapper extends BaseMapper<ArticleTag> {
+
+	int saveBatchList(@Param("list") List<ArticleTag> list);
 
 }
