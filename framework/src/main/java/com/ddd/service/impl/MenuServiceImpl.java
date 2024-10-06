@@ -1,11 +1,14 @@
 package com.ddd.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.Menu;
 import com.ddd.mapper.MenuMapper;
 import com.ddd.service.IMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,5 +65,21 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 				.map(m -> m.setChildren(getChildren(m, menus)))
 				.collect(Collectors.toList());
 		return list;
+	}
+
+	@Override
+	public List<Menu>  selectMenuList(Menu menu) {
+		LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+		wrapper.like(StringUtils.hasText(menu.getMenuName()),Menu::getMenuName,menu.getMenuName());
+		wrapper.eq(StringUtils.hasText(menu.getStatus()),Menu::getStatus,menu.getStatus());
+		wrapper.orderByAsc(Menu::getParentId,Menu::getOrderNum);
+		List<Menu> list = list(wrapper);
+		return list;
+	}
+
+	@Override
+	public boolean hasChild(Long menuId) {
+		int count = count(new LambdaQueryWrapper<Menu>().eq(Menu::getParentId, menuId));
+		return count!=0;
 	}
 }

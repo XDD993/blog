@@ -1,5 +1,6 @@
 package com.ddd.service;
 
+import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,5 +19,9 @@ public interface IMenuService extends IService<Menu> {
 	List<String> selectPermsByUserId(Long id);
 
 	List<Menu> getRouters(Long userId);
+
+	List<Menu>  selectMenuList(Menu menu);
+
+	boolean hasChild(Long menuId);
 }
 

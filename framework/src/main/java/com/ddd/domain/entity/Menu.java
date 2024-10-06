@@ -1,11 +1,10 @@
 package com.ddd.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import io.swagger.annotations.ApiModel;
@@ -68,17 +67,21 @@ public class Menu implements Serializable {
     @ApiModelProperty(value = "菜单图标")
     private String icon;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建者")
     private Long createBy;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间")
-    private LocalDateTime createTime;
+    private Date createTime;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "更新者")
     private Long updateBy;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "更新时间")
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     @ApiModelProperty(value = "备注")
     private String remark;
