@@ -23,5 +23,7 @@ public interface IMenuService extends IService<Menu> {
 	List<Menu>  selectMenuList(Menu menu);
 
 	boolean hasChild(Long menuId);
+
+	List<Long> selectMenuListByRoleId(Long roleId);
 }
 

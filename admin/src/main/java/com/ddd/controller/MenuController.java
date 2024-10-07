@@ -2,9 +2,12 @@ package com.ddd.controller;
 
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.Menu;
+import com.ddd.domain.vo.MenuTreeVo;
 import com.ddd.domain.vo.MenuVo;
+import com.ddd.domain.vo.RoleMenuTreeSelectVo;
 import com.ddd.service.IMenuService;
 import com.ddd.utils.BeanCopyUtils;
+import com.ddd.utils.SystemConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,5 +55,27 @@ public class MenuController {
 		}
 		menuService.removeById(menuId);
 		return ResponseResult.okResult();
+	}
+
+	@GetMapping("/treeselect")
+	public  ResponseResult getAllMenuList(){
+		List<Menu> list = menuService.list();
+		List<MenuTreeVo> menuTreeVos = SystemConverter.buildMenuSelectTree(list);
+		return ResponseResult.okResult(menuTreeVos);
+	}
+
+	/**
+	 * 修改角色查询角色的菜单列表树
+	 * @param roleId
+	 * @return
+	 */
+	@GetMapping("/roleMenuTreeselect/{roleId}")
+	public ResponseResult roleMenuTreeSelect(@PathVariable("roleId")Long roleId){
+		List<Menu> menus = menuService.selectMenuList(new Menu());
+		List<Long> checkedKeys = menuService.selectMenuListByRoleId(roleId);
+		List<MenuTreeVo> menuTreeVos = SystemConverter.buildMenuSelectTree(menus);
+		RoleMenuTreeSelectVo vo = new RoleMenuTreeSelectVo(checkedKeys,menuTreeVos);
+		return ResponseResult.okResult(vo);
+
 	}
 }

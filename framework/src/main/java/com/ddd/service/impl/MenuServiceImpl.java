@@ -82,4 +82,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 		int count = count(new LambdaQueryWrapper<Menu>().eq(Menu::getParentId, menuId));
 		return count!=0;
 	}
+
+	@Override
+	public List<Long> selectMenuListByRoleId(Long roleId) {
+		return getBaseMapper().selectMenuListByRoleId(roleId);
+	}
 }
