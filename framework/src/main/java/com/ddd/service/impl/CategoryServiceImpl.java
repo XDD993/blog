@@ -39,9 +39,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 	@Override
 	public ResponseResult getCategoryList() {
 
-		List<Article> list = articleService.list(new QueryWrapper<Article>().eq("status", SystemCanstants.ARTICLE_STATUS_NORMAL));
+	/*	List<Article> list = articleService.list(new QueryWrapper<Article>().eq("status", SystemCanstants.ARTICLE_STATUS_NORMAL));
 		Set<Long> collect = list.stream().map(obj -> obj.getCategoryId()).collect(Collectors.toSet());
-		List<Category> categoryList = listByIds(collect).stream().filter(obj -> obj.getStatus().equals(SystemCanstants.STATUS_NORMAL)).collect(Collectors.toList());
+		List<Category> categoryList = listByIds(collect).stream().filter(obj -> obj.getStatus().equals(SystemCanstants.STATUS_NORMAL)).collect(Collectors.toList());*/
+		LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(Category::getStatus,0);
+		wrapper.eq(Category::getDelFlag,0);
+		List<Category> categoryList = list(wrapper);
 		List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(categoryList, CategoryVo.class);
 		return ResponseResult.okResult(categoryVos);
 	}
