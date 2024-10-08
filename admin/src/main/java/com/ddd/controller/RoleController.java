@@ -1,11 +1,15 @@
 package com.ddd.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.dto.ChangeRoleStatusDto;
 import com.ddd.domain.entity.Role;
 import com.ddd.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/system/role")
@@ -65,5 +69,11 @@ public class RoleController {
 	public ResponseResult remove(@PathVariable(name = "id") Long id) {
 		roleService.removeById(id);
 		return ResponseResult.okResult();
+	}
+
+	@GetMapping("/listAllRole")
+	public ResponseResult listAllRole(){
+		List<Role> roleList = roleService.list(new QueryWrapper<Role>().eq("status", "0"));
+		return ResponseResult.okResult(roleList);
 	}
 }

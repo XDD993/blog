@@ -23,4 +23,6 @@ public interface IRoleService extends IService<Role> {
 	void insertRole(Role role);
 
 	void updateRole(Role role);
+
+	List<Long> selectRoleIdByUserId(Long userId);
 }

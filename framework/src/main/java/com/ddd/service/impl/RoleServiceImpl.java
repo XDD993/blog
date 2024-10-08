@@ -77,4 +77,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 		roleMenuService.deleteRoleMenuByRoleId(role.getId());
 		insertRoleMenu(role);
 	}
+
+	@Override
+	public List<Long> selectRoleIdByUserId(Long userId) {
+		return getBaseMapper().selectRoleIdByUserId(userId);
+	}
 }

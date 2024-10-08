@@ -1,12 +1,11 @@
 package com.ddd.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -64,20 +63,26 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "头像")
     private String avatar;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建人的用户id")
     private Long createBy;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "更新人")
     private Long updateBy;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
 
     @ApiModelProperty(value = "删除标志（0代表未删除，1代表已删除）")
     private Integer delFlag;
 
-
+    //关联角色id数组，非user表字段
+    @TableField(exist = false)
+    private Long[] roleIds;
 }

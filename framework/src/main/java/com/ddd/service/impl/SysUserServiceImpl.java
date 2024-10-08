@@ -1,14 +1,19 @@
 package com.ddd.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.SysUser;
+import com.ddd.domain.entity.User;
+import com.ddd.domain.entity.UserRole;
+import com.ddd.domain.vo.PageVo;
 import com.ddd.domain.vo.UserInfoVo;
 import com.ddd.enums.AppHttpCodeEnum;
 import com.ddd.handler.exception.SystemException;
 import com.ddd.mapper.SysUserMapper;
 import com.ddd.service.ISysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ddd.service.IUserRoleService;
 import com.ddd.utils.BeanCopyUtils;
 import com.ddd.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -30,6 +39,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private IUserRoleService userRoleService;
 
 	@Override
 	public ResponseResult userInfo() {
@@ -141,4 +152,43 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		return result;
 	}
 
+	@Override
+	public ResponseResult selectUserPage(User user, Integer pageNum, Integer pageSize) {
+		LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(StringUtils.hasText(user.getUserName()),SysUser::getUserName,user.getUserName());
+		wrapper.eq(StringUtils.hasText(user.getPhonenumber()),SysUser::getPhonenumber,user.getPhonenumber());
+		wrapper.eq(StringUtils.hasText(user.getStatus()),SysUser::getStatus,user.getStatus());
+		Page page = new Page(pageNum,pageSize);
+		page(page,wrapper);
+		return ResponseResult.okResult(new PageVo(page.getRecords(),page.getTotal()));
+	}
+
+	@Override
+	public ResponseResult add(SysUser user) {
+		//密码要先进行加密再进行存储
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		save(user);
+		//保存用户角色关系中间表
+		if(user.getRoleIds()!=null&&user.getRoleIds().length>0){
+			insertUserRole(user);
+		}
+		return ResponseResult.okResult();
+	}
+
+	private void insertUserRole(SysUser user) {
+		List<UserRole> list = Arrays.stream(user.getRoleIds()).map(roleId -> new UserRole(user.getId().longValue(), roleId)).collect(Collectors.toList());
+		userRoleService.saveBatch(list);
+	}
+
+	@Override
+	public void updateUser(SysUser user) {
+		//先删除用户角色关联表相关信息
+		LambdaQueryWrapper<UserRole> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(UserRole::getUserId,user.getId());
+		userRoleService.remove(wrapper);
+		//重新插入
+		insertUserRole(user);
+		//更新主表
+		updateById(user);
+	}
 }

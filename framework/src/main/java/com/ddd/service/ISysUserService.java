@@ -3,6 +3,7 @@ package com.ddd.service;
 import com.ddd.domain.ResponseResult;
 import com.ddd.domain.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ddd.domain.entity.User;
 import com.ddd.domain.vo.UserInfoVo;
 
 /**
@@ -20,4 +21,10 @@ public interface ISysUserService extends IService<SysUser> {
 	ResponseResult updateUserInfo(UserInfoVo user);
 
 	ResponseResult register(SysUser user);
+
+	ResponseResult selectUserPage(User user, Integer pageNum, Integer pageSize);
+
+	ResponseResult add(SysUser user);
+
+	void updateUser(SysUser user);
 }
