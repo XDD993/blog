@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ddd.domain.entity.LoginUser;
 import com.ddd.domain.entity.User;
 import com.ddd.mapper.MenuMapper;
+import com.ddd.mapper.SysUserMapper;
 import com.ddd.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

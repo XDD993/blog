@@ -15,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ILinkService extends IService<Link> {
 
 	ResponseResult getAllLink();
+
+	ResponseResult selectLinkPage(Link link, Integer pageNum, Integer pageSize);
 }
